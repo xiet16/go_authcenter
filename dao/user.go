@@ -1,26 +1,31 @@
 package dao
 
+import (
+	"github.com/xiet16/authcenter/lib"
+	"log"
+)
+
 type User struct {
 	ID int `gorm:"primary_key" json:"id"`
-	Name string `json:"name"`
-	Password string `json:"password"`
+	Name string ` json:"user_name" gorm:"column:user_name"`
+	Password string `json:"user_pwd" gorm:"column:user_pwd"`
 }
 
 func (u *User) TableName() string {
 	return "user"
 }
 
-func (u *User) GetUserIDByPwd(username, password string) (userID string) {
-	// use the db conn
-	// write your own user authentication logic
-	// like:
-	// db.Where("name = ? AND password = ?", username, password).First(u)
-	// userID = u.ID
-
-	// test account: admin admin
-	if username == "admin" && password == "admin" {
-		userID = "admin"
+func (u *User) GetUserIDByPwd(search *User) (*User,error) {
+	tx ,err:= lib.GetGormPool("default")
+	if err!=nil {
+		log.Println(err)
+		return nil ,err
 	}
 
-	return
+	out := &User{}
+	err = tx.Where(search).Find(out).Error
+	if err != nil {
+		return nil,err
+	}
+	return out,nil
 }

@@ -1,0 +1,17 @@
+[list]
+    [list.app_client]
+        id = "app_client"
+        secret = "app_client"
+        name = "手机移动端"
+        domain = ""
+        [list.app_client.scope]
+            id = "all"
+            title = "server,deviceservice"
+    [list.manage_web]
+        id = "manage_web"
+        secret = "manage_web"
+        name = "后台管理网站"
+        domain = ""
+        [list.manage_web.scope]
+            id = "all"
+            title = ""

@@ -13,7 +13,7 @@ var store *sessions.CookieStore
 func InitSession()  {
 	gob.Register(url.Values{})
 	//这里要从配置文件取
-	store :=sessions.NewCookieStore([]byte("abc123"))
+	store =sessions.NewCookieStore([]byte("abc123"))
 	store.Options =&sessions.Options{
 		Path: "/",
 		MaxAge: 60*20,

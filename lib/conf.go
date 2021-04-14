@@ -35,6 +35,23 @@ type RedisConf struct {
 	WriteTimeout int      `mapstructure:"write_timeout"`
 }
 
+type ConfConnClientMap struct {
+	List map[string]*ConnClientConf `mapstructure:"list`
+}
+
+type ConnClientConf struct {
+	ID string `mapstructure:"id"`
+	Secret string `mapstructure:"secret"`
+	Name string `mapstructure:"name"`
+	Domain string `mapstructure:"domain"`
+	Scope []Scope `mapstructure:"scope"`
+}
+
+type Scope struct {
+	ID string `mapstructure:"id"`
+	Title string `mapstructure:"title"`
+}
+
 //
 
 var DBMapPool map[string] *sql.DB
@@ -44,6 +61,7 @@ var GORMDefaultPool *gorm.DB
 var ViperConfMap map[string]*viper.Viper
 
 var ConfRedisMap *RedisMapConf
+var ConfConnCientMap *ConfConnClientMap
 
 //初始化配置文件
 func InitViperConf() error {
@@ -85,16 +103,12 @@ func InitRedisConf(path string) error {
 	return nil
 }
 
-
-type Client struct {
-	ID string `yaml:"id"`
-	Secret string `yaml:"secret"`
-	Name string `yaml:"name"`
-	Domain string `yaml:"domain"`
-	Scope []Scope `yaml:"scope"`
-}
-
-type Scope struct {
-	ID string `yaml:"id"`
-	Title string `yaml:"title"`
+func InitConnClient(path string) error {
+    clientConf :=&ConfConnClientMap{}
+    err := ParseConfig(path,clientConf)
+	if err !=nil {
+		return err
+	}
+	ConfConnCientMap = clientConf
+	return nil
 }

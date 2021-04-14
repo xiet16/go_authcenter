@@ -33,9 +33,15 @@ func InitModule(configPath string,modules []string) error {
 		return err
 	}
 
+	if InArrayString("auth_scope",modules) {
+		if err:=InitConnClient(GetConfPath("auth_scope"));err!=nil {
+			fmt.Printf("[ERROR] %s%s\n",time.Now().Format(TimeFormat),"InitConnClient:"+err.Error())
+		}
+	}
+
 	if InArrayString("redis",modules) {
 		if err:= InitRedisConf(GetConfPath("redis_map"));err!=nil{
-          fmt.Printf("[ERROR] %s%s\n",time.Now().Format(TimeFormat),"InitBaseConf:"+err.Error())
+          fmt.Printf("[ERROR] %s%s\n",time.Now().Format(TimeFormat),"InitRedisConf:"+err.Error())
 		}
 	}
 

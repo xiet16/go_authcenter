@@ -10,6 +10,7 @@ import (
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/generates"
 	"gopkg.in/oauth2.v3/manage"
+	"gopkg.in/oauth2.v3/models"
 	"gopkg.in/oauth2.v3/server"
 	"gopkg.in/oauth2.v3/store"
 	"net/http"
@@ -22,7 +23,7 @@ var srv *server.Server
 var mgr *manage.Manager
 
 type TplData struct {
-	Client lib.Client
+	Client *lib.ConnClientConf
 	// 用户申请resource scope
 	Scope []lib.Scope
 	Error string
@@ -45,18 +46,18 @@ func Run() {
 	//access token generate method:jwt
 	mgr.MapAccessGenerate(generates.NewJWTAccessGenerate([]byte("00000000"),jwt.SigningMethodHS512))
 
-   /*
+
    clientStore := store.NewClientStore()
-	for _, v := range config.Get().OAuth2.Client {
+	for _, v := range lib.ConfConnCientMap.List {
 		clientStore.Set(v.ID, &models.Client{
 			ID:     v.ID,
 			Secret: v.Secret,
-			Domain: v.Domain,
+			//Domain: v.Domain,
 		})
 	}
 
    mgr.MapClientStorage(clientStore)
-   */
+
 
    // config oauth2 server
    srv = server.NewServer(server.NewConfig(),mgr)
@@ -66,11 +67,15 @@ func Run() {
 	srv.SetInternalErrorHandler(internalErrorHandler)
 	srv.SetResponseErrorHandler(responseErrorHandler)
 
+    //授权接口
 	http.HandleFunc("/authorize", authorizeHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/logout", logoutHandler)
+
+    //获取access_token 接口
 	http.HandleFunc("/token", tokenHandler)
-	http.HandleFunc("/test", testHandle)
+
+	http.HandleFunc("/authenticate", authenticateHandle)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
 	log.Fatal(http.ListenAndServe(":9096", nil))
@@ -133,9 +138,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	//账号密码验证
 	if r.Form.Get("type") == "password" {
-		var user dao.User
-		userID = user.GetUserIDByPwd(r.Form.Get("username"), r.Form.Get("password"))
-		if userID == "" {
+		search := &dao.User{
+			Name: r.Form.Get("username"),
+			Password: r.Form.Get("password"),
+		}
+		user ,err:= search.GetUserIDByPwd(search)
+		if err!=nil || user.Name == ""{
 			t, err := template.ParseFiles("tpl/login.html")
 			if err != nil{
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -143,8 +151,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			data.Error = "用户名密码错误!"
 			t.Execute(w, data)
-
-			return
 		}
 	}
 
@@ -191,7 +197,7 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func testHandle(w http.ResponseWriter, r *http.Request) {
+func authenticateHandle(w http.ResponseWriter, r *http.Request) {
 	token ,err := srv.ValidationBearerToken(r)
 	if err!=nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -217,9 +223,15 @@ func testHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func passwordAuthorizationHandler(username, password string) (userID string, err error)  {
-   var user dao.User
-   userID = user.GetUserIDByPwd(username,password)
-   return
+    user:= &dao.User{
+    	Name: username,
+    	Password: password,
+	}
+   out,err := user.GetUserIDByPwd(user)
+	if err!=nil {
+		return "", err
+	}
+   return out.Name,nil
 }
 
 func userAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string, err error) {

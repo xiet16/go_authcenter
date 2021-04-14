@@ -6,7 +6,7 @@ import (
 )
 
 func main()  {
-	lib.InitModule("/conf/dev/",[]string{"mysql","redis"})
+	lib.InitModule("./conf/dev/",[]string{"auth_scope","mysql","redis"})
 	lib.InitSession()
 
 	 authserver.Run()

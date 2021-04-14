@@ -2,13 +2,18 @@ package lib
 
 import "strings"
 
-func GetClient(clientID string) (cli Client) {
-	/*for _, v := range cfg.OAuth2.Client {
+func GetClient(clientID string) (cli *ConnClientConf) {
+    /*
+	for _, v := range ConfConnCientMap{
 		if v.ID == clientID {
 			cli = v
 		}
 	}*/
-
+	for _,clientConf := range ConfConnCientMap.List {
+		if clientConf.ID == clientID{
+			cli = clientConf
+		}
+	}
 	return
 }
 
