@@ -101,8 +101,8 @@ func authorizeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-    form,err := lib.GetSession(r,"RequestForm")
+func loginHandler1(w http.ResponseWriter, r *http.Request) {
+	form,err := lib.GetSession(r,"RequestForm")
 	if err!=nil {
 		http.Error(w,err.Error(),http.StatusInternalServerError)
 		return
@@ -164,6 +164,89 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("location","/authorize")
 	w.WriteHeader(http.StatusFound)
+
+	return
+}
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+    //form,err := lib.GetSession(r,"RequestForm")
+	//if err!=nil {
+	//	http.Error(w,err.Error(),http.StatusInternalServerError)
+	//	return
+	//}
+    r.ParseForm()
+	form := r.PostForm
+
+	if form == nil {
+		http.Error(w,"Invalid Request",http.StatusBadRequest)
+		return
+	}
+
+/*	clientID := form.(url.Values).Get("client_id")
+	scope := form.(url.Values).Get("scope")*/
+
+	clientID :=  form.Get("client_id")
+	scope := r.Form.Get("scope")
+
+	//页面数据
+	data :=TplData{
+		Client:lib.GetClient(clientID),
+		Scope: lib.ScopeFilter(clientID,scope),
+	}
+
+	if data.Scope == nil {
+		http.Error(w,"Invalid Scope", http.StatusBadRequest)
+	}
+
+	if r.Method == "POST" {
+		if r.Form == nil {
+			if err:=r.ParseForm(); err!=nil {
+				http.Error(w,err.Error(),http.StatusInternalServerError)
+				return
+			}
+		}
+	}
+
+	var userID string
+
+	//账号密码验证
+	if r.Form.Get("type") == "password" {
+		search := &dao.User{
+			Name: r.Form.Get("username"),
+			Password: r.Form.Get("password"),
+		}
+		user ,err:= search.GetUserIDByPwd(search)
+		if err!=nil || user.Name == ""{
+			t, err := template.ParseFiles("tpl/login.html")
+			if err != nil{
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			data.Error = "用户名密码错误!"
+			t.Execute(w, data)
+		}
+	}
+
+	// 扫码验证
+	// 手机验证码验证
+
+	if err:=lib.SetSession(w,r,"LoggedInUserID",userID);err!=nil {
+		http.Error(w,err.Error(),http.StatusInternalServerError)
+		return
+	}
+
+	req, err := srv.ValidationAuthorizeRequest(r)
+	if err!=nil {
+		http.Error(w,err.Error(),http.StatusInternalServerError)
+	}
+	ti, err := srv.GetAuthorizeToken(req)
+	if err!=nil {
+		http.Error(w,err.Error(),http.StatusInternalServerError)
+	}
+	code := srv.GetAuthorizeData(req.ResponseType, ti)
+	fmt.Println(code)
+	//w.Header().Set("location","/authorize")
+	//w.WriteHeader(http.StatusFound)
 
 	return
 }
