@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"github.com/xiet16/authcenter/lib"
+	"github.com/xiet16/authcenter/common/lib"
 	"log"
 )
 

@@ -40,9 +40,9 @@ type ConfConnClientMap struct {
 }
 
 type ConnClientConf struct {
-	ID string `mapstructure:"id"`
+	ID string     `mapstructure:"id"`
 	Secret string `mapstructure:"secret"`
-	Name string `mapstructure:"name"`
+	Name string   `mapstructure:"name"`
 	Domain string `mapstructure:"domain"`
 	Scope []Scope `mapstructure:"scope"`
 }

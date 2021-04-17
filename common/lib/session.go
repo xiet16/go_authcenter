@@ -22,7 +22,7 @@ func InitSession()  {
 }
 
 func GetSession(r *http.Request,name string)(val interface{},err error) {
-	session,err :=store.Get(r,"session_name")
+	session,err := store.Get(r,"session_name")
 	if err!=nil {
 		return
 	}

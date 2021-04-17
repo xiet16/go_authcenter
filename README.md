@@ -27,3 +27,12 @@ grant_type string   固定值password
 username   string   用户名
 password   string   用户密码
 scope      string   权限范围
+
+
+遗留问题:
+accss_token 再 redis 中的过期问题
+redis中access_token 的管理问题
+生成token，验证token过程中的异常问题
+redis 集群崩溃问题
+
+单点登录问题

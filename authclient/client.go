@@ -1,5 +1,0 @@
-package authclient
-
-func CientStart()  {
-	
-}

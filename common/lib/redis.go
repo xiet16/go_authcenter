@@ -8,9 +8,10 @@ import (
 	"time"
 )
 
-//
+//redis 工厂
+//这里最好好实现负载均衡
 func RedisConnFactory(name string)(redis.Conn,error)  {
-	if ConfRedisMap!=nil&&ConfRedisMap.List !=nil {
+	if ConfRedisMap !=nil&& ConfRedisMap.List !=nil {
 		for confName,cfg := range ConfRedisMap.List{
 			if name == confName {
 				randHost := cfg.ProxyList[rand.Intn(len(cfg.ProxyList))]
@@ -73,4 +74,25 @@ func RedisConfDo(name string,commandName string,args ...interface{})(interface{}
 		log.Info(commandName,"do reply success:",replyStr)
 	}
 	return reply,err
+}
+
+func RedisConfFactory(name string) (addr,pwd string,err error){
+	if ConfRedisMap==nil || ConfRedisMap.List==nil {
+		return "","",errors.New("redis conf not found")
+	}
+
+	if cfg,ok := ConfRedisMap.List[name];ok{
+		randHost := cfg.ProxyList[rand.Intn(len(cfg.ProxyList))]
+		if randHost =="" {
+			return "", "", errors.New("redis host not found")
+		}
+
+		return randHost,cfg.Password,nil
+	}
+	return "", "", errors.New("redis config error")
+}
+
+func RedisSetString(name,key,value string, expire string) error {
+	_,err :=RedisConfDo(name,"SET",key,value,expire)
+	return err
 }

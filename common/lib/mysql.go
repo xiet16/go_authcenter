@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"time"
-	_"github.com/go-sql-driver/mysql"
 )
 
 var TimeFormat = "2006-01-02 15:04:05"
@@ -68,7 +68,7 @@ func InitDBPool(path string) error {
 }
 
 func GetDBPool(name string) (*sql.DB,error) {
-	if dbpool,ok :=DBMapPool[name];ok {
+	if dbpool,ok := DBMapPool[name];ok {
 		return dbpool,nil
 	}
 
@@ -76,7 +76,7 @@ func GetDBPool(name string) (*sql.DB,error) {
 }
 
 func GetGormPool(name string) (*gorm.DB,error) {
-	if dbpool,ok :=GORMMapPool[name];ok {
+	if dbpool,ok := GORMMapPool[name];ok {
 		return dbpool,nil
 	}
 

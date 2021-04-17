@@ -24,7 +24,7 @@ func ParseConfPath(config string) error {
 
 //
 func InitModule(configPath string,modules []string) error {
-	if err :=ParseConfPath(configPath);err!=nil{
+	if err := ParseConfPath(configPath);err!=nil{
 		return err
 	}
 
@@ -34,7 +34,7 @@ func InitModule(configPath string,modules []string) error {
 	}
 
 	if InArrayString("auth_scope",modules) {
-		if err:=InitConnClient(GetConfPath("auth_scope"));err!=nil {
+		if err:= InitConnClient(GetConfPath("auth_scope"));err!=nil {
 			fmt.Printf("[ERROR] %s%s\n",time.Now().Format(TimeFormat),"InitConnClient:"+err.Error())
 		}
 	}
