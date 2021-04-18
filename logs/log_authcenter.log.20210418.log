@@ -1,0 +1,9 @@
+{"client_ip":"::1","latency_time":22150843800,"level":"info","msg":"","req_method":"POST","req_uri":"/api/token","status_code":200,"time":"2021-04-18 22:09:22"}
+{"client_ip":"::1","latency_time":4197104700,"level":"info","msg":"","req_method":"POST","req_uri":"/api/token","status_code":200,"time":"2021-04-18 22:09:33"}
+{"client_ip":"::1","latency_time":7005600,"level":"info","msg":"","req_method":"POST","req_uri":"/api/token","status_code":200,"time":"2021-04-18 22:09:36"}
+{"client_ip":"::1","latency_time":7002500,"level":"info","msg":"","req_method":"POST","req_uri":"/api/token","status_code":200,"time":"2021-04-18 22:09:38"}
+{"client_ip":"::1","latency_time":2998500,"level":"info","msg":"","req_method":"POST","req_uri":"/api/authenticate","status_code":400,"time":"2021-04-18 22:10:01"}
+{"client_ip":"::1","latency_time":5999700,"level":"info","msg":"","req_method":"POST","req_uri":"/api/authenticate","status_code":200,"time":"2021-04-18 22:10:11"}
+{"client_ip":"::1","latency_time":7996000,"level":"info","msg":"","req_method":"POST","req_uri":"/api/authenticate","status_code":200,"time":"2021-04-18 22:11:58"}
+{"client_ip":"::1","latency_time":4000600,"level":"info","msg":"","req_method":"POST","req_uri":"/api/authenticate","status_code":200,"time":"2021-04-18 22:11:59"}
+{"client_ip":"::1","latency_time":5987600,"level":"info","msg":"","req_method":"POST","req_uri":"/api/authenticate","status_code":200,"time":"2021-04-18 22:12:05"}

@@ -1,4 +1,4 @@
-package tokenservice
+package authservice
 
 import (
 	"fmt"
