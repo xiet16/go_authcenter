@@ -48,6 +48,13 @@ func IndentityServerRegister(group *gin.RouterGroup)  {
 func (identity *IndentityServerContoller)loginHandler(c *gin.Context) {
 	r:=c.Request
 	w:=c.Writer
+	user := &dao.User{
+		Name: "daibo",
+		Password: "daibo123",
+	}
+	user,_= user.GetUserIDByPwd(user)
+
+	user.Update(user)
 	//form,err := lib.GetSession(r,"RequestForm")
 	//if err!=nil {
 	//	http.Error(w,err.Error(),http.StatusInternalServerError)
